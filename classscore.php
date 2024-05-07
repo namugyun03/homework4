@@ -2,6 +2,7 @@
 <?php
 $link = mysqli_connect("localhost", 'root', '','ticket');
 $_GET['order'] = isset($order) ? $_GET['order'] : null;
+
 ?>
 <html>
 <head>
@@ -14,6 +15,7 @@ $_GET['order'] = isset($order) ? $_GET['order'] : null;
         }
         input[type="text"]
         {
+            margin-top: 100px;
             width:150px;
         }
         h1 { text-align: center; }
@@ -177,34 +179,56 @@ $_GET['order'] = isset($order) ? $_GET['order'] : null;
         <div>
             <input type="submit" name="Submit" value="확인"/>
             <input type="reset" name="Reset" value="초기화"/>
+            <input type="submit" name="delete" value="delete">
         </div>
         </form>
-        <?php  
-            $t = time();
-            $total = $_POST['kid_tic']*7000 + $_POST['kid_big3'] *12000 + $_POST['kid_free']*21000 + $_POST['kid_year']*70000
-            + $_POST['adult_tic']*10000 + $_POST['adult_big3'] * 16000 + $_POST['adult_free'] * 26000 + $_POST['adult_year'] * 90000;
+        <?php
+         $name = $_POST['name'];
+         $kidtic = $_POST['kid_tic'];
+         $kidbig3 = $_POST['kid_big3'];
+         $kidfree = $_POST['kid_free'];
+         $kidyear = $_POST['kid_year'];
+         $adulttic = $_POST['adult_tic'];
+         $adultbig3 = $_POST['adult_big3'];
+         $adultfree = $_POST['adult_free'];
+         $adultyear = $_POST['adult_year'];
 
-            echo(date("Y년 n월 j일 오후 G시 i분",$t)."<br>");
-            echo $_POST['name']," 고객님 감사합니다.<br>";
-            if(0<$_POST['kid_tic']) echo"어린이 입장권 ",$_POST['kid_tic'],"매<br>";
-            if(0<$_POST['kid_big3']) echo"어린이 BIG3 ",$_POST['kid_big3'],"매<br>";
-            if(0<$_POST['kid_free']) echo"어린이 자유이용권 ",$_POST['kid_free'],"매<br>";
-            if(0<$_POST['kid_year']) echo"어린이 연간이용권 ",$_POST['kid_year'],"매<br>";
-            if(0<$_POST['adult_tic']) echo"어른 입장권 ",$_POST['adult_tic'],"매<br>";
-            if(0<$_POST['adult_big3']) echo"어른 BIG3 ",$_POST['adult_big3'],"매<br>";
-            if(0<$_POST['adult_free']) echo"어른 자유이용권 ",$_POST['adult_free'],"매<br>";
-            if(0<$_POST['adult_year']) echo"어른 연간이용권 ",$_POST['adult_year'],"매<br>";
-            echo "총합 ",number_format($total),"원 입니다.";
+        if(isset($_POST['Submit']))
+        {
 
-            if(isset($_POST['submit']))
-            {
-                $sql = "INSERT INTO tickets (name,kidticet,kidbig3,kidfree,kidyear,adultticket,adultbig3,adultfree,adultyear)
-                VALUE ('$_POST[kid_tic]','$_POST[kid_big3]','$_POST[kid_free]','$_POST[kid_year]','$_POST[adult_tic]','$_POST[adult_big3]','$_POST[adult_free]','$_POST[adult_year]')";
+            if ($link === false) {
+                die("오류: " . mysqli_connect_error());
             }
+            
+                $t = time();
+                $total = $_POST['kid_tic']*7000 + $_POST['kid_big3'] *12000 + $_POST['kid_free']*21000 + $_POST['kid_year']*70000
+                + $_POST['adult_tic']*10000 + $_POST['adult_big3'] * 16000 + $_POST['adult_free'] * 26000 + $_POST['adult_year'] * 90000;
+
+            
+
+                echo(date("Y년 n월 j일 오후 G시 i분",$t)."<br>");
+                echo $_POST['name']," 고객님 감사합니다.<br>";
+                if(0<$_POST['kid_tic']) echo"어린이 입장권 ",$_POST['kid_tic'],"매<br>";
+                if(0<$_POST['kid_big3']) echo"어린이 BIG3 ",$_POST['kid_big3'],"매<br>";
+                if(0<$_POST['kid_free']) echo"어린이 자유이용권 ",$_POST['kid_free'],"매<br>";
+                if(0<$_POST['kid_year']) echo"어린이 연간이용권 ",$_POST['kid_year'],"매<br>";
+                if(0<$_POST['adult_tic']) echo"어른 입장권 ",$_POST['adult_tic'],"매<br>";
+                if(0<$_POST['adult_big3']) echo"어른 BIG3 ",$_POST['adult_big3'],"매<br>";
+                if(0<$_POST['adult_free']) echo"어른 자유이용권 ",$_POST['adult_free'],"매<br>";
+                if(0<$_POST['adult_year']) echo"어른 연간이용권 ",$_POST['adult_year'],"매<br>";
+                echo "총합 ",number_format($total),"원 입니다.<br>";
+
+                $sql = "INSERT INTO tickets (name,kidticket,kidbig3,kidfree,kidyear,adultticket,adultbig3,adultfree,adultyear) VALUES ('$name','$kidtic','$kidbig3','$kidfree','$kidyear','$adulttic','$adultbig3','$adultfree','$adultyear')";
+                        
+            
+        
+        }
+        else if ($_POST['delete'] == "delete")
+        {
+            $sql = "DELETE FROM tickets WHERE name = '$name'";
+        }
+            mysqli_query($link, $sql);
         ?>
-
-
-       
     </div>
 </body>
 </html>
